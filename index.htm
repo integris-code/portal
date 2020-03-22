@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="stylesheet" href="./assets/fonts/feather/feather.css" />
+    <link
+      rel="stylesheet"
+      href="./assets/css/theme.min.css"
+      id="stylesheetLight"
+    />
+
+    <link
+      rel="stylesheet"
+      href="./assets/css/theme-dark.min.css"
+      id="stylesheetDark"
+    />
+
+    <title>Integris Distributor Portal</title>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="navbar navbar-expand-lg " id="topnav">
+        <div class="container">
+          <!-- Toggler -->
+          <button
+            class="navbar-toggler mr-auto"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar"
+            aria-controls="navbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"><i class="fe fe-menu"></i></span>
+          </button>
+
+          <!-- Form -->
+          <form class="form-inline mr-4 d-none d-lg-flex">
+            <div
+              class="input-group input-group-rounded input-group-merge"
+              data-toggle="lists"
+              data-options='{"valueNames": ["name"]}'
+            >
+              <!-- Input -->
+              <input
+                type="search"
+                class="form-control form-control-prepended  dropdown-toggle search"
+                data-toggle="dropdown"
+                placeholder="Search"
+                aria-label="Search"
+              />
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="fe fe-search"></i>
+                </div>
+              </div>
+
+              <!-- Menu -->
+              <div class="dropdown-menu dropdown-menu-card">
+                <div class="card-body">
+                  <!-- List group -->
+                  <div class="list-group list-group-flush list my-n3">
+                    <a
+                      class="list-group-item"
+                      :href="result.link"
+                      v-for="result in clients"
+                    >
+                      <div class=" align-items-center">
+                        <!-- Title -->
+                        <h4 class="text-body mb-1 name">
+                          {{result.name}}
+                        </h4>
+
+                        <!-- Time -->
+                        <p class="small text-muted mb-0">
+                          <span class="fe fe-phone"></span>
+                          <time datetime="2018-05-24">{{result.phone}}</time>
+                        </p>
+                        <p class="small text-muted mb-0">
+                          <span class="fe fe-mail"></span>
+                          <time datetime="2018-05-24">{{result.email}}</time>
+                        </p>
+                      </div>
+                      <!-- / .row -->
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <!-- / .dropdown-menu -->
+            </div>
+          </form>
+
+          <!-- User -->
+          <div class="navbar-user">
+            <!-- Dropdown -->
+            <div class="mr-4 d-none d-lg-flex">
+              <!-- Toggle -->
+              <a
+                href="#"
+                class="navbar-user-link"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Logout
+              </a>
+            </div>
+          </div>
+
+          <!-- Collapse -->
+          <div
+            class="collapse navbar-collapse mr-auto order-lg-first"
+            id="navbar"
+          >
+            <!-- Form -->
+            <form class="mt-4 mb-3 d-md-none">
+              <input
+                type="search"
+                class="form-control form-control-rounded"
+                placeholder="Search"
+                aria-label="Search"
+              />
+            </form>
+
+            <!-- Navigation -->
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item" v-for="(item,index) in menu">
+                <a
+                  class="nav-link"
+                  :class="{'active':item==currentMenuItem}"
+                  href="#"
+                  v-on:click="setMenu(index)"
+                >
+                  {{item}}
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="toggleColorScheme()">
+                  <i class="fe fe-moon"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- / .container -->
+      </nav>
+
+      <div class="main-content" v-if="currentMenuItem == 'Clients'">
+        <div class="pt-5 pb-5 bg-dark bg-ellipses">
+          <div class="container-fluid">
+            <div class="row justify-content-center">
+              <div class="col-8 text-center">
+                <!-- Title -->
+
+                <img :src="distributor.logo" />
+                <h1 class="display-3 text-center text-white mt-4">
+                  Clients
+                </h1>
+              </div>
+            </div>
+            <!-- / .row -->
+          </div>
+        </div>
+
+        <div class="container">
+          <div class="row" v-if="!page.clients.currentClient.show">
+            <div class="col-12">
+              <button
+                class="btn btn-primary mb-3"
+                v-on:click.prevent="newClient()"
+              >
+                <i class="fe fe-plus"></i> Add New Client
+              </button>
+            </div>
+            <div class="col-12 col-xl-8">
+              <!-- Card -->
+              <div class="card mb-3" v-for="(client,index) in clients">
+                <div class="card-body">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <!-- Title -->
+                      <h4 class="mb-1">
+                        <a href="#" v-on:click="showClient(index)"
+                          ><i class="fe fe-user"></i> {{client.name}}
+                        </a>
+                      </h4>
+
+                      <!-- Text -->
+                      <p class="card-text small text-muted mb-1">
+                        <strong>Tracking Number:</strong
+                        ><span>{{client.tracking}}</span><br />
+                        <strong
+                          ><i class="fe fe-phone"></i> Phone Number:</strong
+                        ><span>{{client.phone}}</span><br />
+                        <strong><i class="fe fe-mail"></i> Email:</strong
+                        ><span>{{client.email}}</span><br />
+                      </p>
+                    </div>
+                    <div class="col-auto">
+                      <div class="mb-4">
+                        <span
+                          :class="{'text-success':client.status=='Active','text-muted':client.status!='Active'}"
+                          >●</span
+                        >
+                        {{client.status}}
+                      </div>
+                      <!-- Button -->
+                      <a
+                        href="#!"
+                        class="btn btn-sm btn-primary d-none d-md-inline-block"
+                      >
+                        <i class="fe fe-message-square"></i> Notes
+                      </a>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+                <!-- / .card-body -->
+              </div>
+            </div>
+            <div class="col-12 col-xl-4">
+              <!-- Card -->
+              <div class="card">
+                <div class="card-body">
+                  <!-- List group -->
+                  <div class="list-group list-group-flush my-n3">
+                    <div class="list-group-item">
+                      <div class="row align-items-center">
+                        <div class="col">
+                          <!-- Title -->
+                          <h5 class="mb-0">
+                            Total Clients
+                          </h5>
+                        </div>
+                        <div class="col-auto">
+                          <!-- Text -->
+                          <small class="text-muted">
+                            {{clients.length}}
+                          </small>
+                        </div>
+                      </div>
+                      <!-- / .row -->
+                    </div>
+                    <div class="list-group-item">
+                      <div class="row align-items-center">
+                        <div class="col">
+                          <!-- Title -->
+                          <h5 class="mb-0">
+                            Last Client Created
+                          </h5>
+                        </div>
+                        <div class="col-auto">
+                          <!-- Time -->
+                          <time class="small text-muted" datetime="2018-10-28">
+                            10/24/18
+                          </time>
+                        </div>
+                      </div>
+                      <!-- / .row -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- / .row -->
+
+          <div class="row" v-if="page.clients.currentClient.show">
+            <div class="col-12">
+              <button
+                class="btn btn-primary"
+                v-on:click="page.clients.currentClient.show=false"
+              >
+                <i class="fe fe-chevrons-left"></i> Back to Client List
+              </button>
+            </div>
+            <div class="col-12 col-xl-4 mt-5">
+              <!-- Card -->
+              <div class="card">
+                <div class="card-body">
+                  <!-- List group -->
+                  <div class="list-group list-group-flush my-n3">
+                    <div
+                      class="list-group-item"
+                      v-for="(section,index) in page.clients.currentClient.sections"
+                    >
+                      <div class="row align-items-center">
+                        <div class="col">
+                          <!-- Title -->
+                          <h4>
+                            <a
+                              href="#"
+                              :class="{'text-muted':page.clients.currentClient.currentSection==index}"
+                              v-on:click.prevent="page.clients.currentClient.currentSection=index"
+                            >
+                              <i
+                                class="fe fe-chevron-right"
+                                v-if="page.clients.currentClient.currentSection==index"
+                              ></i>
+                              {{section}}
+                            </a>
+                          </h4>
+                        </div>
+                      </div>
+                      <!-- / .row -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-10 col-xl-8">
+              <!-- Header -->
+              <div class="header">
+                <div class="header-body">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <!-- Pretitle -->
+                      <h6 class="header-pretitle">
+                        Create a new Client
+                      </h6>
+
+                      <!-- Title -->
+                      <h1 class="header-title">
+                        Contact Information
+                      </h1>
+                    </div>
+                  </div>
+                  <!-- / .row -->
+                </div>
+              </div>
+
+              <!-- Form -->
+              <form class="mb-4">
+                <!-- Project name -->
+                <div class="form-group">
+                  <!-- Label  -->
+                  <label>
+                    Name
+                  </label>
+
+                  <!-- Input -->
+                  <input type="text" class="form-control" :value="page.clients.currentClient.details.name" />
+                </div>
+
+                <!-- Project description -->
+                <div class="form-group">
+                  <!-- Label -->
+                  <label class="mb-1">
+                    Project description
+                  </label>
+
+                  <!-- Text -->
+                  <small class="form-text text-muted">
+                    This is how others will learn about the project, so make it
+                    good!
+                  </small>
+
+                  <!-- Textarea -->
+                  <div class="ql-toolbar ql-snow">
+                    <span class="ql-formats"
+                      ><button type="button" class="ql-bold">
+                        <svg viewBox="0 0 18 18">
+                          <path
+                            class="ql-stroke"
+                            d="M5,4H9.5A2.5,2.5,0,0,1,12,6.5v0A2.5,2.5,0,0,1,9.5,9H5A0,0,0,0,1,5,9V4A0,0,0,0,1,5,4Z"
+                          ></path>
+                          <path
+                            class="ql-stroke"
+                            d="M5,9h5.5A2.5,2.5,0,0,1,13,11.5v0A2.5,2.5,0,0,1,10.5,14H5a0,0,0,0,1,0,0V9A0,0,0,0,1,5,9Z"
+                          ></path>
+                        </svg></button
+                      ><button type="button" class="ql-italic">
+                        <svg viewBox="0 0 18 18">
+                          <line
+                            class="ql-stroke"
+                            x1="7"
+                            x2="13"
+                            y1="4"
+                            y2="4"
+                          ></line>
+                          <line
+                            class="ql-stroke"
+                            x1="5"
+                            x2="11"
+                            y1="14"
+                            y2="14"
+                          ></line>
+                          <line
+                            class="ql-stroke"
+                            x1="8"
+                            x2="10"
+                            y1="14"
+                            y2="4"
+                          ></line>
+                        </svg></button></span
+                    ><span class="ql-formats"
+                      ><button type="button" class="ql-link">
+                        <svg viewBox="0 0 18 18">
+                          <line
+                            class="ql-stroke"
+                            x1="7"
+                            x2="11"
+                            y1="7"
+                            y2="11"
+                          ></line>
+                          <path
+                            class="ql-even ql-stroke"
+                            d="M8.9,4.577a3.476,3.476,0,0,1,.36,4.679A3.476,3.476,0,0,1,4.577,8.9C3.185,7.5,2.035,6.4,4.217,4.217S7.5,3.185,8.9,4.577Z"
+                          ></path>
+                          <path
+                            class="ql-even ql-stroke"
+                            d="M13.423,9.1a3.476,3.476,0,0,0-4.679-.36,3.476,3.476,0,0,0,.36,4.679c1.392,1.392,2.5,2.542,4.679.36S14.815,10.5,13.423,9.1Z"
+                          ></path>
+                        </svg></button
+                      ><button type="button" class="ql-blockquote">
+                        <svg viewBox="0 0 18 18">
+                          <rect
+                            class="ql-fill ql-stroke"
+                            height="3"
+                            width="3"
+                            x="4"
+                            y="5"
+                          ></rect>
+                          <rect
+                            class="ql-fill ql-stroke"
+                            height="3"
+                            width="3"
+                            x="11"
+                            y="5"
+                          ></rect>
+                          <path
+                            class="ql-even ql-fill ql-stroke"
+                            d="M7,8c0,4.031-3,5-3,5"
+                          ></path>
+                          <path
+                            class="ql-even ql-fill ql-stroke"
+                            d="M14,8c0,4.031-3,5-3,5"
+                          ></path>
+                        </svg></button
+                      ><button type="button" class="ql-code">
+                        <svg viewBox="0 0 18 18">
+                          <polyline
+                            class="ql-even ql-stroke"
+                            points="5 7 3 9 5 11"
+                          ></polyline>
+                          <polyline
+                            class="ql-even ql-stroke"
+                            points="13 7 15 9 13 11"
+                          ></polyline>
+                          <line
+                            class="ql-stroke"
+                            x1="10"
+                            x2="8"
+                            y1="5"
+                            y2="13"
+                          ></line>
+                        </svg></button
+                      ><button type="button" class="ql-image">
+                        <svg viewBox="0 0 18 18">
+                          <rect
+                            class="ql-stroke"
+                            height="10"
+                            width="12"
+                            x="3"
+                            y="4"
+                          ></rect>
+                          <circle class="ql-fill" cx="6" cy="7" r="1"></circle>
+                          <polyline
+                            class="ql-even ql-fill"
+                            points="5 12 5 11 7 9 8 10 11 7 13 9 13 12 5 12"
+                          ></polyline>
+                        </svg></button></span
+                    ><span class="ql-formats"
+                      ><button type="button" class="ql-list" value="ordered">
+                        <svg viewBox="0 0 18 18">
+                          <line
+                            class="ql-stroke"
+                            x1="7"
+                            x2="15"
+                            y1="4"
+                            y2="4"
+                          ></line>
+                          <line
+                            class="ql-stroke"
+                            x1="7"
+                            x2="15"
+                            y1="9"
+                            y2="9"
+                          ></line>
+                          <line
+                            class="ql-stroke"
+                            x1="7"
+                            x2="15"
+                            y1="14"
+                            y2="14"
+                          ></line>
+                          <line
+                            class="ql-stroke ql-thin"
+                            x1="2.5"
+                            x2="4.5"
+                            y1="5.5"
+                            y2="5.5"
+                          ></line>
+                          <path
+                            class="ql-fill"
+                            d="M3.5,6A0.5,0.5,0,0,1,3,5.5V3.085l-0.276.138A0.5,0.5,0,0,1,2.053,3c-0.124-.247-0.023-0.324.224-0.447l1-.5A0.5,0.5,0,0,1,4,2.5v3A0.5,0.5,0,0,1,3.5,6Z"
+                          ></path>
+                          <path
+                            class="ql-stroke ql-thin"
+                            d="M4.5,10.5h-2c0-.234,1.85-1.076,1.85-2.234A0.959,0.959,0,0,0,2.5,8.156"
+                          ></path>
+                          <path
+                            class="ql-stroke ql-thin"
+                            d="M2.5,14.846a0.959,0.959,0,0,0,1.85-.109A0.7,0.7,0,0,0,3.75,14a0.688,0.688,0,0,0,.6-0.736,0.959,0.959,0,0,0-1.85-.109"
+                          ></path>
+                        </svg></button
+                      ><button type="button" class="ql-list" value="bullet">
+                        <svg viewBox="0 0 18 18">
+                          <line
+                            class="ql-stroke"
+                            x1="6"
+                            x2="15"
+                            y1="4"
+                            y2="4"
+                          ></line>
+                          <line
+                            class="ql-stroke"
+                            x1="6"
+                            x2="15"
+                            y1="9"
+                            y2="9"
+                          ></line>
+                          <line
+                            class="ql-stroke"
+                            x1="6"
+                            x2="15"
+                            y1="14"
+                            y2="14"
+                          ></line>
+                          <line
+                            class="ql-stroke"
+                            x1="3"
+                            x2="3"
+                            y1="4"
+                            y2="4"
+                          ></line>
+                          <line
+                            class="ql-stroke"
+                            x1="3"
+                            x2="3"
+                            y1="9"
+                            y2="9"
+                          ></line>
+                          <line
+                            class="ql-stroke"
+                            x1="3"
+                            x2="3"
+                            y1="14"
+                            y2="14"
+                          ></line>
+                        </svg></button
+                    ></span>
+                  </div>
+                  <div data-toggle="quill" class="ql-container ql-snow">
+                    <div
+                      class="ql-editor ql-blank"
+                      data-gramm="false"
+                      contenteditable="true"
+                    >
+                      <p><br /></p>
+                    </div>
+                    <div
+                      class="ql-clipboard"
+                      contenteditable="true"
+                      tabindex="-1"
+                    ></div>
+                    <div class="ql-tooltip ql-hidden" data-children-count="1">
+                      <a
+                        class="ql-preview"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        href="about:blank"
+                      ></a
+                      ><input
+                        type="text"
+                        data-formula="e=mc^2"
+                        data-link="https://quilljs.com"
+                        data-video="Embed URL"
+                      /><a class="ql-action"></a><a class="ql-remove"></a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Project tags -->
+                <div class="form-group" data-children-count="2">
+                  <!-- Label -->
+                  <label>
+                    Project tags
+                  </label>
+
+                  <!-- Select -->
+                  <select
+                    class="form-control select2-hidden-accessible"
+                    data-toggle="select"
+                    multiple=""
+                    data-select2-id="1"
+                    tabindex="-1"
+                    aria-hidden="true"
+                  >
+                    <option>CSS</option>
+                    <option>HTML</option>
+                    <option>JavaScript</option>
+                    <option>Bootstrap</option> </select
+                  ><span
+                    class="select2 select2-container select2-container--default"
+                    dir="ltr"
+                    data-select2-id="2"
+                    style="width: 704px;"
+                    ><span class="selection"
+                      ><span
+                        class="select2-selection select2-selection--multiple form-control"
+                        role="combobox"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        tabindex="-1"
+                        aria-disabled="false"
+                        ><ul class="select2-selection__rendered">
+                          <li class="select2-search select2-search--inline">
+                            <input
+                              class="select2-search__field"
+                              type="search"
+                              tabindex="0"
+                              autocomplete="off"
+                              autocorrect="off"
+                              autocapitalize="none"
+                              spellcheck="false"
+                              role="searchbox"
+                              aria-autocomplete="list"
+                              placeholder=""
+                              style="width: 0.75em;"
+                            />
+                          </li></ul></span></span
+                    ><span class="dropdown-wrapper" aria-hidden="true"></span
+                  ></span>
+                </div>
+
+                <div class="row">
+                  <div class="col-12 col-md-6">
+                    <!-- Start date -->
+                    <div class="form-group">
+                      <!-- Label -->
+                      <label>
+                        Start date
+                      </label>
+
+                      <!-- Input -->
+                      <input
+                        type="text"
+                        class="form-control flatpickr-input"
+                        data-toggle="flatpickr"
+                        readonly="readonly"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <!-- Start date -->
+                    <div class="form-group">
+                      <!-- Label -->
+                      <label>
+                        End date
+                      </label>
+
+                      <!-- Input -->
+                      <input
+                        type="text"
+                        class="form-control flatpickr-input"
+                        data-toggle="flatpickr"
+                        readonly="readonly"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <!-- / .row -->
+
+                <!-- Divider -->
+                <hr class="mt-4 mb-5" />
+
+                <!-- Project cover -->
+                <div class="form-group">
+                  <!-- Label  -->
+                  <label class="mb-1">
+                    Project cover
+                  </label>
+
+                  <!-- Text -->
+                  <small class="form-text text-muted">
+                    Please use an image no larger than 1200px * 600px.
+                  </small>
+
+                  <!-- Dropzone -->
+                  <div
+                    class="dropzone dropzone-single mb-3 dz-clickable"
+                    data-toggle="dropzone"
+                    data-options='{"url": "https://", "maxFiles": 1, "acceptedFiles": "image/*"}'
+                  >
+                    <!-- Fallback -->
+
+                    <!-- Preview -->
+                    <div class="dz-preview dz-preview-single"></div>
+
+                    <div class="dz-default dz-message">
+                      <span>Drop files here to upload</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Divider -->
+                <hr class="mt-5 mb-5" />
+
+                <!-- Starting files -->
+                <div class="form-group">
+                  <!-- Label -->
+                  <label class="mb-1">
+                    Starting files
+                  </label>
+
+                  <!-- Text -->
+                  <small class="form-text text-muted">
+                    Upload any files you want to start the projust with.
+                  </small>
+
+                  <!-- Card -->
+                  <div class="card">
+                    <div class="card-body">
+                      <!-- Dropzone -->
+                      <div
+                        class="dropzone dropzone-multiple dz-clickable"
+                        data-toggle="dropzone"
+                        data-options='{"url": "https://"}'
+                      >
+                        <!-- Fallback -->
+
+                        <!-- Preview -->
+                        <ul
+                          class="dz-preview dz-preview-multiple list-group list-group-lg list-group-flush"
+                        ></ul>
+
+                        <div class="dz-default dz-message">
+                          <span>Drop files here to upload</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Divider -->
+                <hr class="mt-5 mb-5" />
+
+                <div class="row">
+                  <div class="col-12 col-md-6">
+                    <!-- Private project -->
+                    <div class="form-group">
+                      <!-- Label -->
+                      <label class="mb-1">
+                        Private project
+                      </label>
+
+                      <!-- Text -->
+                      <small class="form-text text-muted">
+                        If you are available for hire outside of the current
+                        situation, you can encourage others to hire you.
+                      </small>
+
+                      <!-- Switch -->
+                      <div class="custom-control custom-switch">
+                        <input
+                          type="checkbox"
+                          class="custom-control-input"
+                          id="switchOne"
+                        />
+                        <label
+                          class="custom-control-label"
+                          for="switchOne"
+                        ></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <!-- Warning -->
+                    <div class="card bg-light border">
+                      <div class="card-body">
+                        <!-- Heading -->
+                        <h4 class="mb-2">
+                          <i class="fe fe-alert-triangle"></i> Warning
+                        </h4>
+
+                        <!-- Text -->
+                        <p class="small text-muted mb-0">
+                          Once a project is made private, you cannot revert it
+                          to a public project.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- / .row -->
+
+                <!-- Divider -->
+                <hr class="mt-5 mb-5" />
+
+                <!-- Buttons -->
+                <a href="#" class="btn btn-block btn-primary">
+                  Create project
+                </a>
+                <a href="#" class="btn btn-block btn-link text-muted">
+                  Cancel this project
+                </a>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-content" v-if="currentMenuItem == 'FAQs'">
+        <div class="pt-5 pb-5 bg-dark bg-ellipses">
+          <div class="container-fluid">
+            <div class="row justify-content-center">
+              <div class="col-8 text-center">
+                <!-- Title -->
+                <img :src="distributor.logo" />
+                <h1 class="display-3 text-center text-white mt-4">
+                  Frequently Asked Questions
+                </h1>
+              </div>
+            </div>
+            <!-- / .row -->
+          </div>
+        </div>
+        <div class="container">
+          <div id="accordion">
+            <div class="card" v-for="(faq,index) in faqs">
+              <div class="card-header" :id="'heading'+index">
+                <h5 class="mb-0">
+                  <button
+                    class="btn btn-link"
+                    data-toggle="collapse"
+                    :data-target="'#collapse'+index"
+                    aria-expanded="false"
+                    :aria-controls="'collapse'+index"
+                  >
+                    {{faq.title}}
+                  </button>
+                </h5>
+              </div>
+
+              <div
+                :id="'collapse'+index"
+                class="collapse"
+                :aria-labelledby="'heading'+index"
+                data-parent="#accordion"
+              >
+                <div class="card-body">
+                  {{faq.body}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="main-content" v-if="currentMenuItem == 'Home'">
+        <!-- HEADER -->
+        <div class="pt-7 pb-8 bg-dark bg-ellipses">
+          <div class="container-fluid">
+            <div class="row justify-content-center">
+              <div class="col-8 text-center">
+                <!-- Title -->
+
+                <h1 class="display-3 text-center text-white">
+                  <img :src="distributor.logo" />
+                </h1>
+
+                <!-- Text -->
+                <p
+                  class="lead text-center text-muted"
+                  v-html="content.welcome"
+                ></p>
+              </div>
+            </div>
+            <!-- / .row -->
+          </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="container">
+          <div class="row mt-n7">
+            <div class="col-12 col-lg-6">
+              <!-- Card -->
+
+              <div class="card">
+                <div class="card-header bg-light">
+                  Forms
+                </div>
+                <div class="card-body">
+                  <div class="card p-4 border-warning font-weight-bolder">
+                    <p>
+                      Integris recommends that these forms be opened with Adobe
+                      Acrobat Reader or Adobe Acrobat DC. Please DO NOT use the
+                      built in PDF reader from your browser.
+                    </p>
+                    <a
+                      href="https://get.adobe.com/reader/"
+                      class="btn btn-outline-secondary"
+                      >Get Adobe Acrobat Reader</a
+                    >
+                  </div>
+                  <div class="list-group list-group-flush my-n3">
+                    <div class="list-group-item">
+                      <div class="row align-items-center">
+                        <div class="col ml-n2">
+                          Illustration Request Form
+                        </div>
+                        <div class="col-auto">
+                          <a
+                            target="_blank"
+                            href="fee.link.english"
+                            class="btn btn-sm btn-outline-primary mr-2"
+                          >
+                            <i class="fe fe-upload-cloud"></i> Upload
+                          </a>
+                          <a
+                            target="_blank"
+                            href="fee.link.french"
+                            class="btn btn-sm btn-outline-primary"
+                          >
+                            <i class="fe fe-download"></i> Upload
+                          </a>
+                        </div>
+                      </div>
+                      <!-- / .row -->
+                    </div>
+                    <div class="list-group-item">
+                      <div class="row align-items-center">
+                        <div class="col ml-n2">
+                          Setup Request Form
+                        </div>
+                        <div class="col-auto">
+                          <a
+                            target="_blank"
+                            href="fee.link.english"
+                            class="btn btn-sm btn-outline-primary mr-2"
+                          >
+                            <i class="fe fe-upload-cloud"></i> Upload
+                          </a>
+                          <a
+                            target="_blank"
+                            href="fee.link.french"
+                            class="btn btn-sm btn-outline-primary"
+                          >
+                            <i class="fe fe-download"></i> Upload
+                          </a>
+                        </div>
+                      </div>
+                      <!-- / .row -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header bg-light">Current Fee Schedules</div>
+                <div class="card-body">
+                  <div class="list-group list-group-flush my-n3 pl-4">
+                    <div
+                      class="list-group-item"
+                      v-for="fee in distributor.fees"
+                    >
+                      <div class="row align-items-center">
+                        <div class="col ml-n2">
+                          {{fee.title}}
+                        </div>
+                        <div class="col-auto">
+                          <a
+                            target="_blank"
+                            :href="fee.link.english"
+                            class="btn btn-sm btn-outline-primary mr-2"
+                          >
+                            English
+                          </a>
+                          <a
+                            target="_blank"
+                            :href="fee.link.french"
+                            class="btn btn-sm btn-outline-primary"
+                          >
+                            French
+                          </a>
+                        </div>
+                      </div>
+                      <!-- / .row -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header bg-light">Resource Library</div>
+                <div class="card-body">
+                  <div class="list-group list-group-flush my-n3">
+                    <div
+                      class="list-group-item"
+                      v-for="resource in distributor.resources"
+                    >
+                      <div class="align-items-center">
+                        <a :href="resource.link" target="_blank"
+                          >{{resource.title}}</a
+                        >
+                      </div>
+                      <!-- / .row -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-6">
+              <!-- Card -->
+              <div class="card">
+                <div class="card-header bg-light">Marketing Documents</div>
+                <div class="card-body">
+                  <div class="list-group list-group-flush my-n3 pl-4">
+                    <div
+                      class="list-group-item"
+                      v-for="marketingDoc in distributor.marketing"
+                    >
+                      <div class="row align-items-center">
+                        <div class="col ml-n2">
+                          {{marketingDoc.title}}
+                        </div>
+                        <div class="col-auto">
+                          <a
+                            target="_blank"
+                            :href="marketingDoc.link.english"
+                            class="btn btn-sm btn-outline-primary mr-2"
+                          >
+                            English
+                          </a>
+                          <a
+                            target="_blank"
+                            :href="marketingDoc.link.french"
+                            class="btn btn-sm btn-outline-primary"
+                          >
+                            French
+                          </a>
+                        </div>
+                      </div>
+                      <!-- / .row -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card -->
+              <div class="card">
+                <div class="card-header bg-light">
+                  Ontario Registered Pension Plans Compliance Manuals
+                </div>
+                <div class="card-body row">
+                  <div class="col-6">
+                    <a href="#" class="btn btn-block btn-outline-primary">
+                      <i class="fe fe-book"></i> Establishing a New PPP
+                    </a>
+                  </div>
+                  <div class="col-6">
+                    <a href="#" class="btn btn-block btn-outline-primary">
+                      <i class="fe fe-book"></i> On-going Administration
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card -->
+              <div class="card card-inactive">
+                <div class="card-header bg-light">Distributor Contacts</div>
+                <div class="card-body" v-html="distributor.contacts"></div>
+              </div>
+              <!-- Card -->
+              <div class="card card-inactive">
+                <div class="card-header bg-light">Integris Contacts</div>
+                <div class="card-body">
+                  <!-- Title -->
+                  <h3>
+                    Business Development &amp; Sales Support
+                  </h3>
+
+                  <!-- Text -->
+                  Adrian Reynolds<br />SVP, Business Development<br /><a
+                    href="mailto:adrian.reynolds@integris-mgt.com"
+                    >adrian.reynolds@integris-mgt.com</a
+                  ><br />647-956-1605<br /><br />Jean-Pierre A. Laporte<br />Chief
+                  Executive Officer<br /><a
+                    href="mailto:jp.laporte@integris-mgt.com"
+                    >jp.laporte@integris-mgt.com</a
+                  ><br />647-956-1601<br /><br />
+                  <h3 class="">
+                    Onboarding &amp; Client Experience
+                  </h3>
+                  Gail Frye<br />Manager – Onboarding &amp; Client Experience<br /><a
+                    href="mailto:gail.frye@integris-mgt.com"
+                    >gail.frye@integris-mgt.com</a
+                  ><br />647-956-1608
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- / .row -->
+
+          <!-- / .row -->
+        </div>
+      </div>
+      <div class="footer text-muted text-center p-5">
+        Powered by Integris Pension Management Corporation
+      </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      var stylesheetLight = document.querySelector("#stylesheetLight");
+      var stylesheetDark = document.querySelector("#stylesheetDark");
+      var theme = localStorage.getItem("colorScheme")
+        ? localStorage.getItem("colorScheme")
+        : "none";
+
+      function toggleColorScheme(colorScheme) {
+        if (typeof colorScheme == "undefined") {
+          if (theme == "light") {
+            colorScheme = "dark";
+          } else {
+            colorScheme = "light";
+          }
+        }
+        if (colorScheme == "light") {
+          stylesheetLight.disabled = false;
+          stylesheetDark.disabled = true;
+          colorScheme = "light";
+        } else if (colorScheme == "dark") {
+          stylesheetLight.disabled = true;
+          stylesheetDark.disabled = false;
+          colorScheme = "dark";
+        }
+
+        localStorage.setItem("colorScheme", colorScheme);
+        theme = colorScheme;
+      }
+      function loadTheme() {
+        var now = new Date();
+
+        if (now.getHours() > 18 || theme == "dark") {
+          toggleColorScheme("dark");
+        } else {
+          toggleColorScheme("light");
+        }
+      }
+
+      loadTheme();
+
+      var app = new Vue({
+        el: "#app",
+        data: {
+          currentMenuItem: "Home",
+          menu: ["Home", "Clients", "FAQs"],
+          page: {
+            clients: {
+              currentClient: {
+                show: false,
+                currentSection: 0,
+                sections: [
+                  "Contact Information",
+                  "Member Profile",
+                  "Income/RRSP",
+                  "Buy Back of Past Service",
+                  "Designated Savings Arrangements",
+                  "Company(s) Profile",
+                  "Company (1)"
+                ],
+                details: {}
+              },
+            }
+          },
+          content: {
+            welcome:
+              "Welcome to the INTEGRIS Distributor Portal. Here is where you " +
+              "can get PPP Illustration quotes for your clients and prospects," +
+              "marketing materials, brochures, fact sheets, Compliance Manuals," +
+              "and other documents to help you understand and market the PPP." +
+              "If you have any questions, or should you have any suggestions as" +
+              "to how we can improve on the information provided here, please" +
+              "do not hesitate to contact your representatives or email us at" +
+              "question@integris-mgt.com."
+          },
+
+          distributor: {
+            logo:
+              "http://www.accilentcapital.com/wp-content/uploads/2016/11/logo-2.jpg",
+            fees: [
+              {
+                title: "Trust - Corporate Trustee",
+                link: {
+                  english:
+                    "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=E",
+                  french:
+                    "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=F"
+                }
+              },
+              {
+                title: "Trust - Individual Trustee",
+                link: {
+                  english:
+                    "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=E",
+                  french:
+                    "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=F"
+                }
+              }
+            ],
+            contacts:
+              "Graham Koehler<br />" +
+              "VP Business Development - Canada<br />" +
+              "gkoehler@accilentcapital.com<br />" +
+              "250-869-7989 ",
+            marketing: [
+              {
+                title: "Understanding the PPP",
+                link: {
+                  english:
+                    "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=E",
+                  french:
+                    "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=F"
+                }
+              },
+              {
+                title: "15 reasons why you should consider a PPP® Brochure",
+                link: {
+                  english:
+                    "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=E",
+                  french:
+                    "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=F"
+                }
+              }
+            ],
+            resources: [
+              {
+                title:
+                  "ENGLISH - CRA T1013 (AUTHORIZING OR CANCELLING A REPRESENTATIVE) FORM",
+                link:
+                  "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=E"
+              },
+              {
+                title:
+                  "FRENCH - CRA T1013 (AUTHORIZING OR CANCELLING A REPRESENTATIVE) FORM",
+                link:
+                  "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=E"
+              },
+              {
+                title: "FACT SHEET NO. 15 - PPP CONTRIBUTIONS",
+                link:
+                  "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=E"
+              },
+              {
+                title: "FACT SHEET NO. 01 - UNDERSTANDING WEALTH",
+                link:
+                  "https://integris-mgt.com/Distributors/AccilentCapitalManagement/ClientRM/DownloadPppClientInformationSheet?language=E"
+              }
+            ]
+          },
+          clients: [
+            {
+              name: "Test User",
+              link: "#",
+              status: "Active",
+              email: "test@integris-mgt.com",
+              phone: "4166700202",
+              tracking: 3428283
+            },
+            {
+              name: "Subhas Test",
+              link: "#",
+              status: "In-Active",
+              email: "test@integris-mgt.com",
+              phone: "4166700202",
+              tracking: 3428283
+            }
+          ],
+          faqs: [
+            {
+              title:
+                "CAN YOU TRANSFER HALF OF IPP TO LIF OR LIRA TO REDUCE THE TAX HIT THAT CANNOT BE SHELTERED?",
+              body:
+                "No. But to pay no tax on wind up of the PPP, you can purchase a ‘copy cat’ annuity pursuant to Income Tax Act section 147.4. In that case, the LIRA/LIF tax hit does not take place because it is not governed by Income Tax Regulations 8517." +
+                'There is a "Maximum Transfer Value"of pension assets that can transfer to a LIRA/LIF on a tax deferred basis. Please see the table on the last page of the Illustration for examples of the amount that would be taxable at different ages.'
+            },
+            {
+              title:
+                "I ASSUME THAT THE CONTRIBUTIONS STOP WHEN EVER YOU START THE PENSION?",
+              body:
+                "Yes, no more annual current service cost contributions are permittedafter the pension is turned on. However, as discussed above, to ensure that the plan remains fully funded, ‘special payments’ could be required by the company on a ‘go forward ‘…these come from the corp, not the employee."
+            },
+            {
+              title:
+                "CAN YOU LOWER THE MONTHLY PAYOUT SO MONEY CAN LAST TO 100?",
+              body:
+                "Significant shareholders can reduce accrued benefits at retirement under section 48 of the regulations, thereby creating surplus and extending the life of the pension assets. But as discussed above, there is no need to do this."
+            }
+          ]
+        },
+        methods: {
+          setMenu: function(index) {
+            this.currentMenuItem = this.menu[index];
+          },
+          showClient: function(index) {
+            this.page.clients.currentClient.details = this.clients[index];
+            this.page.clients.currentClient.show = true;
+          },
+          newClient:function(){
+            this.page.clients.currentClient.details = {};
+            this.page.clients.currentClient.show = true;
+            this.page.clients.currentClient.currentSection = 0;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
