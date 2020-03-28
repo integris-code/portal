@@ -409,20 +409,15 @@
                     </div>
                   </div>
                 </div>
-                
- 
-
-              
-
                 <!-- Divider -->
                 <hr class="mt-5 mb-5" />
 
                 <!-- Buttons -->
-                <a href="#" class="btn btn-block btn-primary">
-                  Create project
+                <a href="#" class="btn" v-on:click="prevSection" :class="{'btn-link text-muted':page.clients.currentClient.currentSection==0, 'btn-primary':page.clients.currentClient.currentSection >0}">
+                  Back
                 </a>
-                <a href="#" class="btn btn-block btn-link text-muted">
-                  Cancel this project
+                <a href="#" class="btn float-right" v-on:click="nextSection" :class="{'text-muted btn-link':page.clients.currentClient.currentSection==page.clients.currentClient.sections.length-1,'btn-primary':page.clients.currentClient.currentSection < page.clients.currentClient.sections.length-1}">
+                  Next <i class="fe fe-chevron-right"></i>
                 </a>
               </form>
             </div>
@@ -973,6 +968,16 @@
             this.page.clients.currentClient.details = {};
             this.page.clients.currentClient.show = true;
             this.page.clients.currentClient.currentSection = 0;
+          },
+          nextSection: function(){
+            if(this.page.clients.currentClient.currentSection < this.page.clients.currentClient.sections.length){
+              this.page.clients.currentClient.currentSection = this.page.clients.currentClient.currentSection +1
+            }
+          },
+          prevSection: function(){
+            if(this.page.clients.currentClient.currentSection > 0){
+              this.page.clients.currentClient.currentSection = this.page.clients.currentClient.currentSection - 1;
+            }
           }
         }
       });
